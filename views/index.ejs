@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Alucar</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/styles.css">
+  </head>
+  <body>
+    <div class="container">
+      <h1>Carros Disponíveis</h1>
+      <div class="row">
+        <% for (let i=0; i < cars.length; i++) {%>
+        <div class="col-md-4">
+          <div class="card">
+              <img src="<%= cars[i].foto %>" class="card-img-top" alt="Carro">
+              <div class="card-body">
+                <h5 class="card-title"></h5>
+                <p class="card-text"><%= cars[i].nome %></p>
+                <p class="card-text">Marca: <%= cars[i].marca %></p>
+                <p class="card-text">Cor: <%= cars[i].cor %></p>
+                <p class="card-text">Valor: <%= cars[i].valor %></p>
+                <p class="card-text">Preço da Diária: <%= cars[i].precoDiaria %></p>
+                <p class="card-text">Data next: <span id="nextAvailable" class="date"><%= cars[i].nextAvailable %></span></p>
+
+                <% if (cars[i].isAvailable) { %>
+                  <p class="card-text">Status: Disponível %></p>
+                <% } else { %>
+                  <p class="card-text">Status: Indisponível %></p>
+                <% } %>
+              </div>
+            </div>
+          </div>
+          <% } %>
+      </div>
+  </div>
+
+  <script>
+    function formatDate(text) {
+      var datePart = text.match(/\d+/g),
+        year = datePart[0].substring(2), // get only two digits
+        month = datePart[1],
+        day = datePart[2];
+
+      return day + '/' + month + '/' + year;
+    }
+    // Obtém o elemento span
+    var nextAvailableElement = document.getElementById('nextAvailable');
+
+    // Obtém o texto do span
+    var nextAvailableText = nextAvailableElement.innerText;
+
+    // Formata a data
+    var formattedDate = formatDate(nextAvailableText);
+
+    // Atualiza o valor exibido no span com a data formatada
+    nextAvailableElement.innerText = formattedDate;
+
+  </script>
+  </body>
+</html>
+<footer class="footer">
+    <p>Para ter uma experiência completa do site faça Login ou Cadastre-se</p>
+    <div class="button-container">
+      <a href="/signin" class="btn btn-primary">Login</a>
+      <div class="divider"></div>
+      <a href="/signup" class="btn btn-success">Cadastrar</a>
+    </div>
+</footer>

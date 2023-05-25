@@ -1,0 +1,11 @@
+<nav class="navbar navbar-inverse">
+    <% if (user.role === 'admin') { %>
+        <a class="nav-link" href="/admin/loja">Loja</a>
+        <a class="nav-link" href="/admin/aluguel">Alugueis</a>
+    <% } else { %>
+        <a class="nav-link" href="/loja">Loja</a>
+        <a class="nav-link" href="/loja/aluguel">Meus alugueis</a>
+        <a class="nav-link" href="/loja/conta">Minha conta</a>
+    <% } %>
+    <a class="nav-link" href="/logout">Logout</a>
+</nav>

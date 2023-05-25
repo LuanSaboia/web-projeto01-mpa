@@ -1,0 +1,91 @@
+<%- include('../template/header-nav'); %>
+
+<ul class="list-group">
+  <% for (let i=0; i < reservas.length; i++) { %>
+    <li class="list-group-item">
+      <div style="
+          display: flex;
+          gap: 50px;
+          ">
+      <img src="<%= reservas[i].carRented.foto %>" class="card-img-top" alt="Carro" style="
+        height: 200px;
+        width: auto;
+        object-fit: cover;
+      ">
+      <div>
+      <h3>Veículo:</h3>
+        
+        <p>
+          Id do Aluguel:
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalDetalhesAluguel<%= i %>"
+            style="background: none; color: black; margin: 0px; padding: 0px; border: none;">
+            <%= reservas[i]._id %>
+          </button>
+        </p>
+        <p>Nome: <%= reservas[i].carRented.nome %></p>
+        <p>Marca: <%= reservas[i].carRented.marca %></p>
+        <p>Cor: <%= reservas[i].carRented.cor %></p>
+        <p>Valor: <%= reservas[i].carRented.valor %></p>
+        <p>Preço Diária: <%= reservas[i].carRented.precoDiaria %></p>
+      </div>
+      <div>
+      <h3>Reserva:</h3>
+        <p>Data de Início: <%= reservas[i].dataInicio %></p>
+        <p>Data de Fim: <%= reservas[i].dataFim %></p>
+        <p>Valor Total do Aluguel: <%= reservas[i].valorTotal %></p>
+        <p>Status: <%= reservas[i].status %></p>
+      <% if(reservas[i].status === 'Aguardando Confirmação'){ %>
+        <div style="display: flex;
+                    gap: 10px;">
+          <form action="/admin/aluguel?aceitar=<%= reservas[i]._id %>" method="POST">
+            <input type="hidden" name="_method" value="ACCEPT">
+            <button type="submit" class="btn btn-primary">Aceitar</button>
+          </form>
+          <form action="/admin/aluguel?rejeitar=<%= reservas[i]._id %>" method="POST">
+            <input type="hidden" name="_method" value="REJECT">
+            <button type="submit" class="btn btn-danger">Rejeitar</button>
+          </form>
+        </div>
+        
+      <% } %>
+      </div>
+      <div>
+        <h3>Locador:</h3>
+        <p><%= reservas[i].requestedCustomer.nome %></p>
+      </div>
+      </div>
+    </li>
+<!-- Modal -->
+    <div class="modal fade" id="modalDetalhesAluguel<%= i %>" tabindex="-1" role="dialog" aria-labelledby="modalDetalhesAluguel<%= i %>" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Id da reserva: <%= reservas[i]._id %></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            
+            <h4>Dados do veículo</h4>
+            <p>Nome: <%= reservas[i].carRented.nome %></p>
+            <p>Marca: <%= reservas[i].carRented.marca %></p>
+            <p>Cor: <%= reservas[i].carRented.cor %></p>
+            <p>Valor: <%= reservas[i].carRented.valor %></p>
+            <p>Preço Diária: <%= reservas[i].carRented.precoDiaria %></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% } %>
+</ul>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+  </body>
+</html>

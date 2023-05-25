@@ -1,0 +1,51 @@
+<%- include('../template/header-nav'); %>
+
+<ul class="list-group">
+  <% for (let i=0; i < reservas.length; i++) { %>
+    <li class="list-group-item">
+      <div style="
+          display: flex;
+          gap: 50px;
+          ">
+      <img src="<%= reservas[i].carRented.foto %>" class="card-img-top" alt="Carro" style="
+        height: 200px;
+        width: auto;
+        object-fit: cover;
+      ">
+      <div>
+      <h3>Veículo</h3>
+      <p>Nome: <%= reservas[i].carRented.nome %></p>
+      <p>Marca: <%= reservas[i].carRented.marca %></p>
+      <p>Cor: <%= reservas[i].carRented.cor %></p>
+      <p>Status: <%= reservas[i].carRented.status %></p>
+      <p>Valor: <%= reservas[i].carRented.valor %></p>
+      </div>
+      <div>
+      <h3>Reserva</h3>
+      <p>Data de Início: <%= reservas[i].dataInicio %></p>
+      <p>Quantidade de diárias: <%= reservas[i].qtdDias %></p>
+      <p>Valor Total do Aluguel: <%= reservas[i].valorTotal %></p>
+      <p>Status: <%= reservas[i].status %></p>
+      </div>
+      </div>
+    </li>
+  <% } %>
+</ul>
+
+<script>
+  function calcularQuantidadeDias(dataInicio, dataFim) {
+    const inicio = new Date(dataInicio);
+    const fim = new Date(dataFim);
+    const umDiaEmMilissegundos = 24 * 60 * 60 * 1000; // Quantidade de milissegundos em um dia
+    const diffTime = Math.abs(fim - inicio); // Diferença em milissegundos entre as duas datas
+    const diffDays = Math.ceil(diffTime / umDiaEmMilissegundos); // Diferença em dias, arredondando para cima
+    return diffDays;
+  }
+</script>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+  </body>
+</html>
