@@ -44,7 +44,7 @@ async function getInfoUser(id) {
 }
 
 async function getUsersClient(email, senha) {
-  const clientUsers = await user_collection.find({ role: 'student' }).toArray();
+  const clientUsers = await user_collection.find({ role: 'client' }).toArray();
 
   let findResult = null;
 
@@ -156,15 +156,27 @@ async function getRentsByUser(user) {
 }
 
 async function getRentsNOUser(user, carId) {
-  console.log('getRentsNOUser - Username param:', user.email);
+  // console.log('getRentsNOUser - Username param:', user.email);
   
+  // const findResult = await rents_collection.find({
+  //   requestedCustomer: { $ne: user._id },
+  //   'carRented._id': { $ne: carId },
+  //   status: 'Confirmado'
+  // }).sort({ dataInicio: 1 }).limit(3).toArray();
+  
+  // console.log('Repository - getRentsNOUser - Found documents =>', findResult);
+  // return findResult;
+  console.log('getRentsConfirmed - Car ID:', carId);
+
   const findResult = await rents_collection.find({
-    requestedCustomer: { $ne: user._id },
-    'carRented._id': { $ne: carId },
+    'carRented._id': carId,
     status: 'Confirmado'
-  }).sort({ dataInicio: 1 }).limit(3).toArray();
-  
-  console.log('Repository - getRentsNOUser - Found documents =>', findResult);
+  })
+  .sort({ dataInicio: 1 })
+  .limit(3)
+  .toArray();
+
+  console.log('Repository - getRentsConfirmed - Found documents:', findResult);
   return findResult;
 }
 
@@ -181,6 +193,22 @@ async function getCarById(id) {
   const findResult = await cars_collection.findOne({ _id: ObjectId(id) });
   console.log('Found document =>', findResult);
   return findResult;
+}
+
+async function findCarByNomeOuMarca(value) {
+  try {
+    const query = {
+      $or: [
+        { nome: { $regex: value, $options: 'i' } }, // Buscar por nome (case-insensitive)
+        { marca: { $regex: value, $options: 'i' } }, // Buscar por marca (case-insensitive)
+      ],
+    };
+
+    const cars = await cars_collection.find(query).toArray();
+    return cars;
+  } catch (error) {
+    throw new Error('Erro na busca de carros: ' + error.message);
+  }
 }
 
 async function saveCars(cars){
@@ -327,6 +355,7 @@ exports.getRentsNOUser = getRentsNOUser;
 //cars
 exports.getCars = getCars;
 exports.getCarById = getCarById;
+exports.findCarByNomeOuMarca = findCarByNomeOuMarca;
 exports.saveCars = saveCars;
 exports.saveRentCar = saveRentCar;
 exports.updateCar = updateCar;

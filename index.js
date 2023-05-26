@@ -1,4 +1,5 @@
 const express = require('express')
+const flash = require('connect-flash');
 var cookieSession = require('cookie-session')
 const app = express()
 const port = 3000
@@ -21,6 +22,16 @@ app.use(cookieSession({
   secret: 'your secret here',
   maxAge: 24 * 60 * 60 * 1000 // 24 hours
 }))
+
+app.use(flash())
+app.use(function(req, res, next){
+    res.locals.message = req.flash();
+    next();
+});
+
+app.get('/display-message', (req, res) => {
+    res.render("template/display",{ message: 'Tudo certo'});
+});
 
 app.get('/logout', (req, res) => {
   req.session = null
@@ -95,7 +106,7 @@ app.get('/signup', (req, res) => {
 })
 
 app.get('/admin', (req, res) => {
-  res.render('admin/admin')
+  res.render('admin/admin', {message: ''})
 })
 
 app.use((req, res, next) => {
@@ -121,10 +132,10 @@ app.use(express.urlencoded({ extended: true }))
 const mongoRepository = require('./repository/mongo-repository')
 
 app.get('/signin', (req, res) => {
-  res.render('signin', {error: null})
+  res.render('signin', {message: ''})
 })
 
-app.post('/login', (req, res) => {
+app.post('/signin', (req, res) => {
   console.log('post - /login')
   console.log(req.body)
   mongoRepository.getUsersClient(req.body.email, req.body.senha).then(users => {
@@ -132,7 +143,9 @@ app.post('/login', (req, res) => {
       req.session.user = users
       res.redirect('/loja')
       return 
-    } else res.redirect('/')
+    } else {
+      res.render('signin', { message: 'email ou senha inválido' })
+    }
   });
 })
 
@@ -145,7 +158,9 @@ app.post('/admin', (req, res) => {
       req.session.user = users
       res.redirect('/admin/loja')
       return 
-    } else res.redirect('/')
+    } else {
+      res.render('admin/admin', { message: 'email ou senha inválido' })
+    }
   });
 })
 
@@ -177,7 +192,140 @@ app.post('/signup', (req, res) => {
             from: 'luan.saboia@gmail.com',
             to: user.email,
             subject: 'Seu cadastro na Alucar',
-            text: 'Olá, este é um exemplo de e-mail enviado com o Ethereal Email!',
+            html: `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+            <html
+              xmlns="http://www.w3.org/1999/xhtml"
+              xmlns:o="urn:schemas-microsoft-com:office:office"
+            >
+              <head>
+                <meta charset="UTF-8" />
+                <meta content="width=device-width, initial-scale=1" name="viewport" />
+                <meta name="x-apple-disable-message-reformatting" />
+                <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                <meta content="telephone=no" name="format-detection" />
+                <title></title>
+              </head>
+            
+              <body>
+                <div class="es-wrapper-color">
+                  <table class="es-wrapper" width="100%" cellspacing="0" cellpadding="0">
+                    <tbody>
+                      <tr>
+                        <td class="esd-email-paddings" valign="top">
+                          <table
+                            class="es-content esd-footer-popover"
+                            cellspacing="0"
+                            cellpadding="0"
+                            align="center"
+                          >
+                            <tbody>
+                              <tr>
+                                <td
+                                  class="esd-stripe"
+                                  align="center"
+                                  esd-custom-block-id="61188"
+                                >
+                                  <table
+                                    class="es-content-body"
+                                    style="background-color: transparent"
+                                    width="600"
+                                    cellspacing="0"
+                                    cellpadding="0"
+                                    bgcolor="transparent"
+                                    align="center"
+                                  >
+                                    <tbody>
+                                      <tr>
+                                        <td
+                                          class="esd-structure es-p20b"
+                                          style="background-position: center top"
+                                          align="left"
+                                        >
+                                          <table
+                                            width="100%"
+                                            cellspacing="0"
+                                            cellpadding="0"
+                                          >
+                                            <tbody>
+                                              <tr>
+                                                <td
+                                                  class="esd-container-frame"
+                                                  width="600"
+                                                  valign="top"
+                                                  align="center"
+                                                >
+                                                  <table
+                                                    style="
+                                                      background-position: center bottom;
+                                                      background-color: #ffffff;
+                                                      border-radius: 5px;
+                                                      border-collapse: separate;
+                                                    "
+                                                    width="100%"
+                                                    cellspacing="0"
+                                                    cellpadding="0"
+                                                    bgcolor="#ffffff"
+                                                  >
+                                                    <tbody>
+                                                      <tr>
+                                                        <td
+                                                          class="esd-block-text es-p10t es-p20r es-p20l"
+                                                          align="left"
+                                                        >
+                                                          <h2>Olá,</h2>
+                                                          <p><br /></p>
+                                                          <p>
+                                                            Seja bem-vindo ao nosso site de
+                                                            locação de veículos.
+                                                          </p>
+                                                          <p>
+                                                            Recebemos seu cadastro e estamos
+                                                            felizes com sua confiança em
+                                                            nossos serviços.
+                                                          </p>
+                                                          <p>
+                                                            Aguardamos você agora em nosso
+                                                            site para fazer a locação do seu
+                                                            primeiro veículo.
+                                                          </p>
+                                                          <p><br /></p>
+                                                          <p>
+                                                            Seu cadastro foi efetuado com
+                                                            sucesso, qualquer dúvida ou
+                                                            problema em nosso site entre em
+                                                            contato conosco!
+                                                          </p>
+                                                          <p><br /></p>
+                                                          <p>
+                                                            <strong
+                                                              >Esperamos que aprecie nosso
+                                                              site! Obrigado!</strong
+                                                            >
+                                                          </p>
+                                                        </td>
+                                                      </tr>
+                                                    </tbody>
+                                                  </table>
+                                                </td>
+                                              </tr>
+                                            </tbody>
+                                          </table>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </body>
+            </html>`
+            // text: 'Olá, este é um exemplo de e-mail enviado com o Ethereal Email!',
           });
           // Usuário cadastrado com sucesso, redirecionar para a página de login
           res.redirect('/loja');
@@ -204,34 +352,48 @@ app.get('/home',(req,res) => {
   res.render('home', {user: req.session.user})
 })
 
-app.use('/student/*',(req, res, next) => {
+app.use('/client/*',(req, res, next) => {
   console.log('== Student Area Middleware')
   console.log(req.session)
-  if(req.session.user.role == 'student'){
+  if(req.session.user.role == 'client'){
     next()
   }
   else res.redirect('/signin')
 })
 
-app.get('/student/home',(req,res) => {
-  res.render('student/home', {user: req.session.user})
+app.get('/client/home',(req,res) => {
+  res.render('client/home', {user: req.session.user})
 })
 
+let findCars = null
 app.get('/loja', async (req,res) => {
   mongoRepository.getCars().then((cars) => {
-    res.render('student/loja', { cars: cars, user: req.session.user });
+    res.render('client/loja', { cars: cars, user: req.session.user });
   });
 })
 
+app.post('/loja', (req, res) => {
+  const value = req.body.buscaCarro; // Obter o valor do input
+
+  findCars = mongoRepository.findCarByNomeOuMarca(value).then((cars) => {
+    // Fazer algo com o resultado da busca (o array de carros)
+    console.log('Resultado da busca:', cars);
+    res.render('client/loja', { cars, user: req.session.user }); // Exemplo: renderizar a página "loja" com o array de carros
+  }).catch((error) => {
+    console.error('Erro na busca:', error);
+    res.status(500).send('Erro na busca de carros.'); // Exemplo: enviar uma resposta de erro
+  });
+});
+
 app.get('/loja/conta',(req,res) => {
   mongoRepository.getInfoUser(req.session.user._id).then((user) => {
-    res.render('student/conta', { user: user });
+    res.render('client/conta', { user: user });
   });
 })
 
 app.get('/loja/conta-editar/:id',(req,res) => {
   mongoRepository.getInfoUser(req.session.user._id).then((user) => {
-    res.render('student/conta-editar', { user: user });
+    res.render('client/conta-editar', { user: user });
   });
 })
 
@@ -247,7 +409,7 @@ app.post('/loja/conta-editar/:id', (req, res) => {
 
 app.get('/loja/conta-senha/:id',(req,res) => {
   mongoRepository.getInfoUser(req.session.user._id).then((user) => {
-    res.render('student/conta-senha', { user: user });
+    res.render('client/conta-senha', { user: user, message: '' });
   });
 })
 
@@ -269,7 +431,7 @@ app.post('/loja/conta-senha/:id', (req, res) => {
     })
     .catch((error) => {
       console.log(error);
-      res.redirect('/loja/conta'); // Redirecionar para a página de conta com uma mensagem de erro, se necessário
+      res.status(400).send('Senha atual está incorreta');
     });
 });
 
@@ -277,25 +439,21 @@ app.post('/loja/conta-senha/:id', (req, res) => {
 var carById  = null
 app.get('/loja/alugar', async (req,res) => {
   carById = await mongoRepository.getCarById(req.query.carId);
-  console.log(carById);
+  console.log('===================== Carro Id: ', carById);
 
   const user = req.session.user;
-  const reservas = await mongoRepository.getRentsNOUser(user, req.query.carId);
+  const reservas = await mongoRepository.getRentsNOUser(user, carById._id);
 
-  res.render('student/alugar', { user: user, reservas: reservas, cars: carById});
+  res.render('client/alugar', { user: user, reservas: reservas, cars: carById});
 })
 
-app.get('/getRentsNOUser', async (req, res) => {
-  const userId = req.query.userId;
-  const carId = req.query.carId;
-  const reservas = await mongoRepository.getRentsNOUser(userId, carId);
-  res.json(reservas);
-});
-
-
+const moment = require('moment')
 app.post('/loja/alugar',(req,res) => {
   console.log('POST - /loja/alugar')
   let reserva = req.body;
+  reserva.dataInicio = moment(reserva.dataInicio, 'YYYY/MM/DD').format('DD/MM/YYYY');
+  reserva.dataFim = moment(reserva.dataFim, 'YYYY/MM/DD').format('DD/MM/YYYY');
+
   reserva.status = 'Aguardando Confirmação'
   reserva.carRented = carById;
   reserva.requestedCustomer = req.session.user;
@@ -310,7 +468,7 @@ app.post('/loja/alugar',(req,res) => {
 
 app.get('/loja/aluguel', async (req,res) => {
   mongoRepository.getRentsByUser(req.session.user).then((reservas) => {
-    res.render('student/aluguel', { user: req.session.user, reservas: reservas });
+    res.render('client/aluguel', { user: req.session.user, reservas: reservas });
   })
 })
 
@@ -361,7 +519,7 @@ app.post('/admin/loja/editar-carro/:id', (req, res) => {
   console.log('== Conta Editar');
   console.log(userUpdate);
   mongoRepository.updateCar(carId, userUpdate).then(() => {
-    res.redirect('/loja/conta');
+    res.redirect('/admin/loja');
   });
 })
 

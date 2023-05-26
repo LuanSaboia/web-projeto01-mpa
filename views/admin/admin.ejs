@@ -9,6 +9,11 @@
   <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
+  <div style="width: 600px;">
+    <% if (message.length > 0) { %>
+      <%- include('../template/display'); %>
+      <% } %>
+  </div>
   <div class="login-card" style="width: 600px;">
     <div class="login-form">
       <h2>Login - Admin</h2>
@@ -26,7 +31,11 @@
     </div>
   </div>
 
-
+  <script>
+    setTimeout(function() {
+      $('#alertMessage').remove();
+    }, 3000); 
+  </script>
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
   <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
   <!-- Include all compiled plugins (below), or include individual files as needed -->

@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="/css/styles.css">
   </head>
 <body>
+  <% if (message.length > 0) { %>
+    <%- include('template/display'); %>
+  <% } %>
   <div class="login-card">
     <div id="d-flex" class="col-md-4" style="display: flex;
                                             flex-direction: column;
@@ -21,7 +24,7 @@
     </div>
     <div class="login-form">
       <h2>Login</h2>
-      <form action="/login" method="POST">
+      <form action="/signin" method="POST">
         <div class="form-group">
           <label for="email">Email</label>
           <input type="email" id="email" name="email" placeholder="Digite seu email" required>
@@ -34,9 +37,12 @@
       </form>
     </div>
   </div>
-  <% if (error) { %>
-    <p class="error-message"><%= error %></p>
-  <% } %>
+
+  <script>
+    setTimeout(function() {
+      $('#alertMessage').remove();
+    }, 3000); 
+  </script>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->

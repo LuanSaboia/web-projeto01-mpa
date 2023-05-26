@@ -13,7 +13,7 @@
       <h1>Carros Disponíveis</h1>
       <div class="row">
         <% for (let i=0; i < cars.length; i++) {%>
-        <div class="col-md-4">
+        <div class="col-md-6">
           <div class="card">
               <img src="<%= cars[i].foto %>" class="card-img-top" alt="Carro">
               <div class="card-body">
@@ -23,12 +23,11 @@
                 <p class="card-text">Cor: <%= cars[i].cor %></p>
                 <p class="card-text">Valor: <%= cars[i].valor %></p>
                 <p class="card-text">Preço da Diária: <%= cars[i].precoDiaria %></p>
-                <p class="card-text">Data next: <span id="nextAvailable" class="date"><%= cars[i].nextAvailable %></span></p>
-
                 <% if (cars[i].isAvailable) { %>
                   <p class="card-text">Status: Disponível %></p>
                 <% } else { %>
                   <p class="card-text">Status: Indisponível %></p>
+                  <p class="card-text" style="color: red;">Disponível em: <span id="nextAvailable" class="date"><%= cars[i].nextAvailable %></span></p>
                 <% } %>
               </div>
             </div>

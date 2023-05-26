@@ -24,8 +24,6 @@
         </p>
         <p>Nome: <%= reservas[i].carRented.nome %></p>
         <p>Marca: <%= reservas[i].carRented.marca %></p>
-        <p>Cor: <%= reservas[i].carRented.cor %></p>
-        <p>Valor: <%= reservas[i].carRented.valor %></p>
         <p>Preço Diária: <%= reservas[i].carRented.precoDiaria %></p>
       </div>
       <div>
@@ -61,9 +59,9 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">Id da reserva: <%= reservas[i]._id %></h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
-            </button>
+            </button> -->
           </div>
           <div class="modal-body">
             
@@ -73,6 +71,26 @@
             <p>Cor: <%= reservas[i].carRented.cor %></p>
             <p>Valor: <%= reservas[i].carRented.valor %></p>
             <p>Preço Diária: <%= reservas[i].carRented.precoDiaria %></p>
+            <hr style="border: 1px solid;
+                      color: gainsboro;
+            ">
+            <h4>Dados do Aluguel</h4>
+            <p>Data de Início: <%= reservas[i].dataInicio %></p>
+            <p>Data de Fim: <%= reservas[i].dataFim %></p>
+            <p>Valor Total do Aluguel: <%= reservas[i].valorTotal %></p>
+            <p>Duração da locação: <%= reservas[i].qtdDias %> dia(s)</p>
+            <p>Forma de pagamento: <%= reservas[i].formaPagamento %></p>
+            <p>Status: <%= reservas[i].status %></p>
+            <hr style="border: 1px solid;
+                      color: gainsboro;
+            ">
+            <h4>Dados do Locador</h4>
+            <p>Nome: <%= reservas[i].requestedCustomer.nome %></p>
+            <p>Data de nascimento: <%= reservas[i].requestedCustomer.dtNascimento %></p>
+            <p>Telefone: <%= reservas[i].requestedCustomer.telefone %></p>
+            <p>Email: <%= reservas[i].requestedCustomer.email %></p>
+            
+            
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
