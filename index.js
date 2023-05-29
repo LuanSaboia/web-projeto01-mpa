@@ -1,5 +1,6 @@
 const express = require('express')
 const flash = require('connect-flash');
+const ejs = require('ejs');
 var cookieSession = require('cookie-session')
 const app = express()
 const port = 3000
@@ -120,7 +121,6 @@ app.use((req, res, next) => {
   if(req.path == '/'){
     if(req.session.user){
       console.log('Go home')
-      res.redirect('/home')
     } else next();
   } else next();
 });
@@ -173,6 +173,10 @@ app.post('/signup', (req, res) => {
     if(users.length > 0){
       res.status(400).send('O email já está cadastrado. Por favor, utilize outro email.');
     }  else {
+      const fs = require('fs');
+      const templatePath = 'views/template/mail.ejs';
+      const template = fs.readFileSync(templatePath, 'utf-8');
+      
       // Criação do objeto de usuário
       const user = {
         nome,
@@ -183,7 +187,10 @@ app.post('/signup', (req, res) => {
         senha,
         role: 'client'
       };
-
+      
+      // Renderizar o template com os dados do usuário
+      const renderedTemplate = ejs.render(template, { user: user });
+      
       // Salvar o usuário no banco de dados
       mongoRepository.saveUser(user)
         .then( async (insertedUser) => {
@@ -192,139 +199,7 @@ app.post('/signup', (req, res) => {
             from: 'luan.saboia@gmail.com',
             to: user.email,
             subject: 'Seu cadastro na Alucar',
-            html: `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-            <html
-              xmlns="http://www.w3.org/1999/xhtml"
-              xmlns:o="urn:schemas-microsoft-com:office:office"
-            >
-              <head>
-                <meta charset="UTF-8" />
-                <meta content="width=device-width, initial-scale=1" name="viewport" />
-                <meta name="x-apple-disable-message-reformatting" />
-                <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-                <meta content="telephone=no" name="format-detection" />
-                <title></title>
-              </head>
-            
-              <body>
-                <div class="es-wrapper-color">
-                  <table class="es-wrapper" width="100%" cellspacing="0" cellpadding="0">
-                    <tbody>
-                      <tr>
-                        <td class="esd-email-paddings" valign="top">
-                          <table
-                            class="es-content esd-footer-popover"
-                            cellspacing="0"
-                            cellpadding="0"
-                            align="center"
-                          >
-                            <tbody>
-                              <tr>
-                                <td
-                                  class="esd-stripe"
-                                  align="center"
-                                  esd-custom-block-id="61188"
-                                >
-                                  <table
-                                    class="es-content-body"
-                                    style="background-color: transparent"
-                                    width="600"
-                                    cellspacing="0"
-                                    cellpadding="0"
-                                    bgcolor="transparent"
-                                    align="center"
-                                  >
-                                    <tbody>
-                                      <tr>
-                                        <td
-                                          class="esd-structure es-p20b"
-                                          style="background-position: center top"
-                                          align="left"
-                                        >
-                                          <table
-                                            width="100%"
-                                            cellspacing="0"
-                                            cellpadding="0"
-                                          >
-                                            <tbody>
-                                              <tr>
-                                                <td
-                                                  class="esd-container-frame"
-                                                  width="600"
-                                                  valign="top"
-                                                  align="center"
-                                                >
-                                                  <table
-                                                    style="
-                                                      background-position: center bottom;
-                                                      background-color: #ffffff;
-                                                      border-radius: 5px;
-                                                      border-collapse: separate;
-                                                    "
-                                                    width="100%"
-                                                    cellspacing="0"
-                                                    cellpadding="0"
-                                                    bgcolor="#ffffff"
-                                                  >
-                                                    <tbody>
-                                                      <tr>
-                                                        <td
-                                                          class="esd-block-text es-p10t es-p20r es-p20l"
-                                                          align="left"
-                                                        >
-                                                          <h2>Olá,</h2>
-                                                          <p><br /></p>
-                                                          <p>
-                                                            Seja bem-vindo ao nosso site de
-                                                            locação de veículos.
-                                                          </p>
-                                                          <p>
-                                                            Recebemos seu cadastro e estamos
-                                                            felizes com sua confiança em
-                                                            nossos serviços.
-                                                          </p>
-                                                          <p>
-                                                            Aguardamos você agora em nosso
-                                                            site para fazer a locação do seu
-                                                            primeiro veículo.
-                                                          </p>
-                                                          <p><br /></p>
-                                                          <p>
-                                                            Seu cadastro foi efetuado com
-                                                            sucesso, qualquer dúvida ou
-                                                            problema em nosso site entre em
-                                                            contato conosco!
-                                                          </p>
-                                                          <p><br /></p>
-                                                          <p>
-                                                            <strong
-                                                              >Esperamos que aprecie nosso
-                                                              site! Obrigado!</strong
-                                                            >
-                                                          </p>
-                                                        </td>
-                                                      </tr>
-                                                    </tbody>
-                                                  </table>
-                                                </td>
-                                              </tr>
-                                            </tbody>
-                                          </table>
-                                        </td>
-                                      </tr>
-                                    </tbody>
-                                  </table>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </body>
-            </html>`
+            html: renderedTemplate
             // text: 'Olá, este é um exemplo de e-mail enviado com o Ethereal Email!',
           });
           // Usuário cadastrado com sucesso, redirecionar para a página de login
@@ -348,10 +223,6 @@ app.use((req, res, next) => {
 
 })
 
-app.get('/home',(req,res) => {
-  res.render('home', {user: req.session.user})
-})
-
 app.use('/client/*',(req, res, next) => {
   console.log('== Student Area Middleware')
   console.log(req.session)
@@ -359,10 +230,6 @@ app.use('/client/*',(req, res, next) => {
     next()
   }
   else res.redirect('/signin')
-})
-
-app.get('/client/home',(req,res) => {
-  res.render('client/home', {user: req.session.user})
 })
 
 let findCars = null
@@ -451,8 +318,6 @@ const moment = require('moment')
 app.post('/loja/alugar',(req,res) => {
   console.log('POST - /loja/alugar')
   let reserva = req.body;
-  reserva.dataInicio = moment(reserva.dataInicio, 'YYYY/MM/DD').format('DD/MM/YYYY');
-  reserva.dataFim = moment(reserva.dataFim, 'YYYY/MM/DD').format('DD/MM/YYYY');
 
   reserva.status = 'Aguardando Confirmação'
   reserva.carRented = carById;
@@ -479,10 +344,6 @@ app.use('/admin/*',(req, res, next) => {
     next()
   }
   else res.redirect('/')
-})
-
-app.get('/admin/home',(req,res) => {
-  res.render('admin/home', {user: req.session.user})
 })
 
 app.get('/admin/loja',(req,res) => {
